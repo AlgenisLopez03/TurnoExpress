@@ -13,7 +13,7 @@ Verificación de disponibilidad de citas.
 Reserva de servicios.
 Recepción de notificaciones en tiempo real sobre el estado de las citas.
 
-#  Debajo está el video de Front de este proyecto, y el back está en otro repositorio, ya que así es una manera de consumir la API
+#  Debajo está el video de Front de este proyecto, y el back está en otro repositorio, ya que así es una manera de consumir la API, No puedo dar acceso a la aplicacion movil estara en produccion.
 
 
 # Getting Started with Create React App
