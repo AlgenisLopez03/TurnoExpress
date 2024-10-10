@@ -1,3 +1,21 @@
+# Descripción del Proyecto
+Este trabajo de grado tiene como objetivo desarrollar una aplicación web y móvil diseñada para optimizar la gestión de turnos en negocios, facilitando tanto la organización interna de los dueños de negocios como la experiencia de los clientes.
+
+# Funcionalidades para Dueños de Negocios
+Registro de establecimientos.
+Detalle de los servicios ofrecidos.
+Establecimiento de horarios laborales.
+Gestión eficiente de la disponibilidad de citas.
+
+# Funcionalidades para Clientes
+Exploración de negocios registrados.
+Verificación de disponibilidad de citas.
+Reserva de servicios.
+Recepción de notificaciones en tiempo real sobre el estado de las citas.
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
