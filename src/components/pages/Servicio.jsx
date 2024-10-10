@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import { RxMagnifyingGlass } from "react-icons/rx";
+import { IoIosNotificationsOutline } from "react-icons/io";
 import './Servicio.css';
 import ServicioCalendario from './ServicioCalendario';
 
@@ -24,11 +28,65 @@ const servicios = [
   // Agrega más servicios aquí...
 ];
 
-function Servicio() {
+const Servicio = () => {
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [profilePic, setProfilePic] = useState('');
   const [filter, setFilter] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Todos');
   const [selectedServicio, setSelectedServicio] = useState(null);
   const [appointments, setAppointments] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const userProfile = JSON.parse(localStorage.getItem('userProfile'));
+    if (userProfile && userProfile.profileImage) {
+      setProfilePic(`https://localhost:7207/api/v1/Images/%20?folderName=CustomIdentityUser&imageName=${userProfile.profileImage}`);
+    }
+  }, []);
+
+  const toggleProfileMenu = () => {
+    setProfileMenuOpen(!profileMenuOpen);
+  };
+
+  const logout = () => {
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success",
+        cancelButton: "btn btn-danger"
+      },
+      buttonsStyling: false
+    });
+
+    swalWithBootstrapButtons.fire({
+      title: "¿Estás seguro?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, cerrar sesión",
+      cancelButtonText: "No, cancelar",
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        swalWithBootstrapButtons.fire({
+          title: "¡Cerrado!",
+          text: "Tu sesión ha sido cerrada.",
+          icon: "success"
+        }).then(() => {
+          localStorage.clear();
+          navigate('/');
+        });
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        swalWithBootstrapButtons.fire({
+          title: "Cancelado",
+          text: "Tu sesión sigue activa.",
+          icon: "error"
+        });
+      }
+    });
+  };
+
+  const navigateToProfile = () => {
+    navigate('/Configprofiles');
+  };
 
   const filteredServicios = servicios.filter(servicio =>
     servicio.name.toLowerCase().includes(filter.toLowerCase()) &&
@@ -37,30 +95,45 @@ function Servicio() {
 
   const handleSaveAppointment = (appointment) => {
     setAppointments([...appointments, appointment]);
-    alert('Cita guardada con éxito!');
+    Swal.fire('Cita guardada con éxito!')
+      .then(() => {
+        navigate('/Turno'); // Navegar a Turno después de guardar la cita
+      });
   };
 
   return (
     <div className="App">
-      <header className="home-header">
-        <div className="header-content">
-          <div className="logo">
-            <h1>Servicios de Belleza</h1>
-          </div>
-          <div className="search-profile">
-            <div className="search-container">
-              <input 
-                type="text" 
-                placeholder="Buscar servicios..." 
-                className="search-bar"
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
-              />
-            </div>
-          </div>
+      <div className="logo">
+        <h1>Servicios de Belleza</h1>
+      </div>
+      <div className="search-profile">
+        <div className="search-container">
+          <RxMagnifyingGlass className='search-icon' />
+          <input 
+            type="text" 
+            placeholder="Buscar servicios..." 
+            className="search-bar"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          />
         </div>
-      </header>
-      <div></div>
+        <div className="profile" onClick={toggleProfileMenu}>
+          <img src={profilePic} alt="Profile" className='profile-pic' />
+          <span>Mi Perfil</span>
+          <span className='perfil_espacio'>▼</span>
+        </div>
+        {profileMenuOpen && (
+          <div className="profile-menu">
+            <div className="profile-option" onClick={navigateToProfile}>Configurar Perfil</div>
+            <div className="profile-option">
+              <span>Notificación</span>
+              <IoIosNotificationsOutline className="icon" />
+            </div>
+            <div className="profile-option" onClick={logout}>Cerrar Sesión</div>
+          </div>
+        )}
+      </div>
+
       <div className="App-content">
         <div className="categories">
           {categories.map(category => (
@@ -81,10 +154,8 @@ function Servicio() {
               <p>{servicio.description}</p>
               <p>${servicio.price}</p>
               <button className="reservar-button" onClick={() => setSelectedServicio(servicio)}>Reservar</button>
-
             </div>
           ))}
-      
         </div>
         {selectedServicio && 
           <ServicioCalendario 
@@ -96,6 +167,6 @@ function Servicio() {
       </div>
     </div>
   );
-}
+};
 
 export default Servicio;

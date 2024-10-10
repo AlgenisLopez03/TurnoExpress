@@ -1,5 +1,3 @@
-/* HomeAuth.css */
-
 .home-header {
     width: 100%;
     max-width: 900px;
@@ -13,13 +11,13 @@
     margin: auto;
     margin-top: 20px;
 }
-homeservice
+
 .header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    position: relative; /* Añadir para posicionar el menú de perfil correctamente */
+    position: relative; /* Posicionar el menú de perfil correctamente */
 }
 
 .logo {
@@ -41,7 +39,7 @@ homeservice
 .search-container {
     position: relative;
     flex: 1;
-    margin-left: 45px; /* Añadir margen de 45px entre el h1 y la barra de búsqueda */
+    margin-left: 45px; /* Margen de 45px entre el h1 y la barra de búsqueda */
 }
 
 .search-container .search-icon {
@@ -78,7 +76,7 @@ homeservice
     display: flex;
     align-items: center;
     cursor: pointer;
-    position: relative; /* Añadir para posicionar el menú de perfil correctamente */
+    position: relative; /* Posicionar el menú de perfil correctamente */
 }
 
 .profile .icon {
@@ -155,7 +153,7 @@ homeservice
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     min-width: 200px;
     flex: 0 0 auto;
-    margin: 10px; /* Añadir margen alrededor de cada tarjeta */
+    margin: 10px; /* Margen alrededor de cada tarjeta */
 }
 
 .service-item p {
@@ -169,6 +167,29 @@ homeservice
     padding: 5px 10px;
     display: inline-block;
     margin-top: 5px;
+}
+
+.service-image {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    width: 100%;
+    height: 100px; 
+}
+
+.service-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile .profile-pic {
+    width: 60px;
+    height: 50px;
+    border-radius: 100%;
+    margin-right: 30px;
 }
 
 /* Media queries para diseño responsivo */
@@ -188,33 +209,4 @@ homeservice
         margin-left: 0;
         margin-top: 10px;
     }
-}
-
-.profile .profile-pic {
-    width: 60px;
-    height: 50px;
-    border-radius: 100%;
-    margin-right: 30px;
-}
-
-.service-image {
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    width: 100%;
-    height: 100px; 
-}
-
-.service-image img {
-    width: 500px;
-    height: 100%;
-    object-fit: cover;
-}
-
-.homeservice{
-    background: linear-gradient( #dddd68, #dddd6864, #ffffff);
-    
-    margin: 10px;
 }

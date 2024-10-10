@@ -98,6 +98,9 @@ const HomeInitialAUTH = () => {
     const navigateToProfile = () => {
         navigate('/Configprofiles');
     };
+    const navigateToTurno = () => {
+        navigate('/Turno');
+    };
     return (
         <div className='home-header'>
             <div className="header-content">
@@ -121,6 +124,7 @@ const HomeInitialAUTH = () => {
                                 <span>Notificación</span>
                                 <IoIosNotificationsOutline className="icon" />
                             </div>
+                            <div className="profile-option" onClick={navigateToTurno}>Turno</div>
                             <div className="profile-option" onClick={logout}>Cerrar Sesión</div>
                         </div>
                     )}

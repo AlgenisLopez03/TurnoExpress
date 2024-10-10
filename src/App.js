@@ -13,9 +13,7 @@ import Establishments from "./components/Owner/Jobestablis/Establishments";
 import ImageDisplay from "./components/pages/ImageDisplay";
 import Configprofiles from "./components/auth/Configprofiles";
 import Intro from "./components/pages/Intro";
-
-
-
+import Turno from "./components/pages/Turno";
 
 
 function App() {
@@ -25,7 +23,7 @@ function App() {
         <Routes>
         <Route path="/" element={<Intro />} />
           <Route path="/Login" element={<Login />} />
-        <Route path="/" element={<Login />} />
+          <Route path="/" element={<Login />} />
           <Route path="/Registro" element={<Registro />} />
           <Route path="/HomeInitialAUTH" element={<HomeInitialAUTH />} />
           <Route path="/Servicio" element={<Servicio />} />
@@ -33,8 +31,8 @@ function App() {
           <Route path="/ServiceJob" element={<ServiceJob/>}/>
           <Route path="/Establishments" element={<Establishments/>}/>
           <Route path="ImageDisplay" element={<ImageDisplay/>}/>
-          <Route path="/Configprofiles" element={<Configprofiles />} />
-
+          <Route path="/Configprofiles" element={<Configprofiles />}/>          
+          <Route path="/Turno" element={<Turno />} />
         </Routes>
       </div>
     </Router>

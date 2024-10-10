@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import Swal from "sweetalert2";
-import apiService from "../../api/apiService"; // Asegúrate de importar apiService correctamente
+import apiService from "../../api/apiService";
 import loginImage from "../Assets/file2.png";
 import "./Configprofiles.css";
 
@@ -21,7 +21,6 @@ function Configprofiles() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Reemplaza 'admin' con el nombre de usuario que deseas buscar
     apiService.getUserByUsername('admin').then(response => {
       const data = response.data;
       setUsuario({
@@ -42,29 +41,27 @@ function Configprofiles() {
   }, []);
 
   const onChange = (e) => {
-    if (e.target.name === "ProfileImage") {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          setImagePreviewUrl(event.target.result);
-          Swal.fire({
-            title: "Se agregó la imagen correctamente",
-            imageUrl: event.target.result,
-            imageAlt: "Se agregó la imagen correctamente",
-            customClass: 'swal2-custom'
-          });
-        };
-        reader.readAsDataURL(file);
-        setUsuario({
-          ...usuario,
-          ProfileImage: file,
+    const { name, value, files } = e.target;
+    if (name === "ProfileImage" && files.length > 0) {
+      const file = files[0];
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setImagePreviewUrl(event.target.result);
+        Swal.fire({
+          title: "Imagen agregada correctamente",
+          imageUrl: event.target.result,
+          imageAlt: "Imagen de perfil",
         });
-      }
+      };
+      reader.readAsDataURL(file);
+      setUsuario({
+        ...usuario,
+        ProfileImage: file,
+      });
     } else {
       setUsuario({
         ...usuario,
-        [e.target.name]: e.target.value,
+        [name]: value,
       });
     }
   };
@@ -75,9 +72,9 @@ function Configprofiles() {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-success",
-        cancelButton: "btn btn-danger"
+        cancelButton: "btn btn-danger",
       },
-      buttonsStyling: false
+      buttonsStyling: false,
     });
 
     swalWithBootstrapButtons.fire({
@@ -85,9 +82,9 @@ function Configprofiles() {
       text: "No podrás revertir esto!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Sí, registrar!",
+      confirmButtonText: "Sí, guardar cambios!",
       cancelButtonText: "No, cancelar!",
-      reverseButtons: true
+      reverseButtons: true,
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
@@ -95,42 +92,45 @@ function Configprofiles() {
           formData.append('FirstName', usuario.Nombre);
           formData.append('LastName', usuario.Apellido);
           formData.append('UserName', usuario.NomeUsuario);
+          formData.append('Email', usuario.email);
+          formData.append('PhoneNumber', usuario.phoneNumber);
+          formData.append('Roles', usuario.roles);
           if (usuario.ProfileImage) {
             formData.append('ImageFile', usuario.ProfileImage);
           }
           formData.append('IsOwner', isOwner);
           formData.append('IsEmployee', isEmployee);
 
-          const response = await apiService.create('/Account/userbyusername', formData); // Usa apiService.create
+          const response = await apiService.update('/Account/userbyusername', formData);
 
           if (response.success) {
             swalWithBootstrapButtons.fire({
-              title: "Registrado!",
-              text: "Usuario registrado con éxito.",
-              icon: "success"
+              title: "¡Actualizado!",
+              text: "Perfil actualizado con éxito.",
+              icon: "success",
             }).then(() => {
-              navigate("/"); // Redirige a la ruta donde está el componente Login
+              navigate("/"); // Redirige a la ruta deseada
             });
           } else {
             swalWithBootstrapButtons.fire({
               title: "Error",
-              text: response.message || "Error al registrar el usuario",
-              icon: "error"
+              text: response.message || "Error al actualizar el perfil.",
+              icon: "error",
             });
           }
         } catch (error) {
           console.error("Error durante la solicitud:", error);
           swalWithBootstrapButtons.fire({
             title: "Error",
-            text: error.response?.data.message || 'Error al registrar el usuario',
-            icon: "error"
+            text: error.response?.data.message || 'Error al actualizar el perfil.',
+            icon: "error",
           });
         }
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         swalWithBootstrapButtons.fire({
           title: "Cancelado",
-          text: "El registro ha sido cancelado",
-          icon: "error"
+          text: "La actualización ha sido cancelada.",
+          icon: "error",
         });
       }
     });
@@ -140,7 +140,12 @@ function Configprofiles() {
     <div className="User-form">
       <div className="form-container dark-shadow">
         <form onSubmit={onSubmit}>
-          <img src={imagePreviewUrl} alt="Login" className="login-image" onClick={() => document.getElementById('ProfileImage').click()} />
+          <img
+            src={imagePreviewUrl}
+            alt="Vista previa de perfil"
+            className="login-image"
+            onClick={() => document.getElementById('ProfileImage').click()}
+          />
           <div className="form-group">
             <input
               type="text"
@@ -169,10 +174,22 @@ function Configprofiles() {
             <input
               type="text"
               className="form-control"
+              name="NomeUsuario"
+              id="NomeUsuario"
+              value={usuario.NomeUsuario}
+              placeholder="Nombre de Usuario"
+              onChange={onChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <input
+              type="email"
+              className="form-control"
               name="email"
               id="email"
               value={usuario.email}
-              placeholder="email"
+              placeholder="Correo electrónico"
               onChange={onChange}
             />
           </div>
@@ -184,7 +201,7 @@ function Configprofiles() {
               name="phoneNumber"
               id="phoneNumber"
               value={usuario.phoneNumber}
-              placeholder="Numero de telefono"
+              placeholder="Número de teléfono"
               onChange={onChange}
             />
           </div>
@@ -196,7 +213,7 @@ function Configprofiles() {
               name="roles"
               id="roles"
               value={usuario.roles}
-              placeholder="Rolo de Usuario"
+              placeholder="Roles"
               onChange={onChange}
             />
           </div>
@@ -208,8 +225,10 @@ function Configprofiles() {
             style={{ display: 'none' }}
             onChange={onChange}
           />
+
           <div className="form-group mt-3">
-            <button type="submit">Editar</button>
+            <button type="submit">Guardar Cambios</button>
+            <button type="button" onClick={() => navigate("/login")}>Volver al Login</button>
           </div>
         </form>
       </div>

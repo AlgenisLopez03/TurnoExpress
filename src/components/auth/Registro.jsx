@@ -9,63 +9,63 @@ import loginImage from "../Assets/file2.png";
 import "./Registro.css";
 
 function Registro() {
-  const [usuario, guardarUsuario] = useState({
-    Nombre: "",
-    Apellido: "",
-    NomeUsuario: "",
-    telefone: "",
+  const [userData, setUserData] = useState({
+    firstName: "",
+    lastName: "",
+    userName: "",
+    phoneNumber: "",
     email: "",
     password: "",
-    confirmar: "",
-    ProfileImage: null,
+    confirmPassword: "",
+    profileImage: null,
   });
   const [imagePreviewUrl, setImagePreviewUrl] = useState(loginImage);
   const navigate = useNavigate();
 
-  const { Nombre, Apellido, NomeUsuario, telefone, email, password, confirmar, ProfileImage } = usuario;
+  const {
+    firstName, lastName, userName, phoneNumber, email, password, confirmPassword, profileImage
+  } = userData;
 
-  const onChange = (e) => {
-    if (e.target.name === "ProfileImage") {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          setImagePreviewUrl(event.target.result);
-          Swal.fire({
-            title: "Se agrego la imagen correctamente",
-            imageUrl: event.target.result,
-            imageAlt: "Se agrego la imagen correctamente",
-            customClass: 'swal2-custom' // Clase personalizada
-          });
-        };
-        reader.readAsDataURL(file);
-        guardarUsuario({
-          ...usuario,
-          ProfileImage: file,
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    if (name === "profileImage" && files.length > 0) {
+      const file = files[0];
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setImagePreviewUrl(event.target.result);
+        Swal.fire({
+          title: "Imagen agregada correctamente",
+          imageUrl: event.target.result,
+          imageAlt: "Imagen de perfil",
         });
-      }
+      };
+      reader.readAsDataURL(file);
+      setUserData({
+        ...userData,
+        profileImage: file,
+      });
     } else {
-      guardarUsuario({
-        ...usuario,
-        [e.target.name]: e.target.value,
+      setUserData({
+        ...userData,
+        [name]: value,
       });
     }
   };
 
   const validatePassword = (password) => {
-    const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/;
-    return regex.test(password);
+    // Validación simple para asegurar que la contraseña tenga al menos 8 caracteres.
+    return password.length >= 8;
   };
 
-  const onSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (password !== confirmar) {
+    if (password !== confirmPassword) {
       Swal.fire({
         title: "Error",
-        text: "Las contraseñas no coinciden",
+        text: "Las contraseñas no coinciden.",
         icon: "error",
-        confirmButtonText: "Ok"
+        confirmButtonText: "Ok",
       });
       return;
     }
@@ -73,9 +73,9 @@ function Registro() {
     if (!validatePassword(password)) {
       Swal.fire({
         title: "Error",
-        text: "La contraseña debe contener al menos una letra mayúscula, una minúscula, un número y un carácter especial.",
+        text: "La contraseña debe tener al menos 8 caracteres.",
         icon: "error",
-        confirmButtonText: "Ok"
+        confirmButtonText: "Ok",
       });
       return;
     }
@@ -83,9 +83,9 @@ function Registro() {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-success",
-        cancelButton: "btn btn-danger"
+        cancelButton: "btn btn-danger",
       },
-      buttonsStyling: false
+      buttonsStyling: false,
     });
 
     swalWithBootstrapButtons.fire({
@@ -95,19 +95,19 @@ function Registro() {
       showCancelButton: true,
       confirmButtonText: "Sí, registrar!",
       cancelButtonText: "No, cancelar!",
-      reverseButtons: true
+      reverseButtons: true,
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
           const formData = new FormData();
-          formData.append('FirstName', Nombre);
-          formData.append('LastName', Apellido);
-          formData.append('UserName', NomeUsuario);
-          formData.append('PhoneNumber', telefone);
+          formData.append('FirstName', firstName);
+          formData.append('LastName', lastName);
+          formData.append('UserName', userName);
+          formData.append('PhoneNumber', phoneNumber);
           formData.append('Email', email);
           formData.append('Password', password);
-          if (ProfileImage) {
-            formData.append('ImageFile', ProfileImage);
+          if (profileImage) {
+            formData.append('ImageFile', profileImage);
           }
 
           const response = await apiService.create('/Account/register', formData);
@@ -116,30 +116,30 @@ function Registro() {
             swalWithBootstrapButtons.fire({
               title: "Registrado!",
               text: "Usuario registrado con éxito.",
-              icon: "success"
+              icon: "success",
             }).then(() => {
               navigate("/"); // Redirige a la ruta donde está el componente Login
             });
           } else {
             swalWithBootstrapButtons.fire({
               title: "Error",
-              text: response.message || "Error al registrar el usuario",
-              icon: "error"
+              text: response.message || "Error al registrar el usuario.",
+              icon: "error",
             });
           }
         } catch (error) {
           console.error("Error durante la solicitud:", error);
           swalWithBootstrapButtons.fire({
             title: "Error",
-            text: error.response?.data.message || 'Error al registrar el usuario',
-            icon: "error"
+            text: "Error al registrar el usuario.",
+            icon: "error",
           });
         }
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         swalWithBootstrapButtons.fire({
           title: "Cancelado",
-          text: "El registro ha sido cancelado",
-          icon: "error"
+          text: "El registro ha sido cancelado.",
+          icon: "error",
         });
       }
     });
@@ -148,17 +148,22 @@ function Registro() {
   return (
     <div className="User-form">
       <div className="form-container dark-shadow">
-        <form onSubmit={onSubmit}>
-          <img src={imagePreviewUrl} alt="Login" className="login-image" onClick={() => document.getElementById('ProfileImage').click()} />
+        <form onSubmit={handleSubmit}>
+          <img
+            src={imagePreviewUrl}
+            alt="Vista previa de perfil"
+            className="login-image"
+            onClick={() => document.getElementById('ProfileImage').click()}
+          />
           <div className="form-group">
             <input
               type="text"
               className="form-control"
-              name="Nombre"
-              id="Nombre"
-              value={Nombre}
+              name="firstName"
+              id="firstName"
+              value={firstName}
               placeholder="Nombre"
-              onChange={onChange}
+              onChange={handleChange}
             />
           </div>
 
@@ -166,11 +171,11 @@ function Registro() {
             <input
               type="text"
               className="form-control"
-              name="Apellido"
-              id="Apellido"
-              value={Apellido}
+              name="lastName"
+              id="lastName"
+              value={lastName}
               placeholder="Apellido"
-              onChange={onChange}
+              onChange={handleChange}
             />
           </div>
 
@@ -178,11 +183,11 @@ function Registro() {
             <input
               type="text"
               className="form-control"
-              name="NomeUsuario"
-              id="NomeUsuario"
-              value={NomeUsuario}
+              name="userName"
+              id="userName"
+              value={userName}
               placeholder="Nombre de Usuario"
-              onChange={onChange}
+              onChange={handleChange}
             />
           </div>
 
@@ -191,11 +196,11 @@ function Registro() {
             <input
               type="text"
               className="form-control"
-              name="telefone"
-              id="telefone"
-              value={telefone}
+              name="phoneNumber"
+              id="phoneNumber"
+              value={phoneNumber}
               placeholder="Teléfono"
-              onChange={onChange}
+              onChange={handleChange}
             />
           </div>
 
@@ -208,7 +213,7 @@ function Registro() {
               id="email"
               value={email}
               placeholder="Correo electrónico"
-              onChange={onChange}
+              onChange={handleChange}
             />
           </div>
 
@@ -217,11 +222,11 @@ function Registro() {
             <input
               type="password"
               className="form-control"
+              name="password"
               id="password"
               value={password}
-              name="password"
               placeholder="Contraseña"
-              onChange={onChange}
+              onChange={handleChange}
             />
           </div>
 
@@ -230,24 +235,27 @@ function Registro() {
             <input
               type="password"
               className="form-control"
-              id="confirmar"
-              value={confirmar}
-              name="confirmar"
+              name="confirmPassword"
+              id="confirmPassword"
+              value={confirmPassword}
               placeholder="Repita la contraseña"
-              onChange={onChange}
+              onChange={handleChange}
             />
           </div>
 
           <input
             type="file"
             id="ProfileImage"
-            name="ProfileImage"
+            name="profileImage"
             style={{ display: 'none' }}
-            onChange={onChange}
+            onChange={handleChange}
           />
 
           <div className="form-group mt-3">
             <button type="submit">Registrate</button>
+          </div>
+          <div className="register-link">
+            <button type="button" onClick={() => navigate("/login")}>Volver al Login</button>
           </div>
         </form>
       </div>
