@@ -13,7 +13,8 @@ Verificación de disponibilidad de citas.
 Reserva de servicios.
 Recepción de notificaciones en tiempo real sobre el estado de las citas.
 
-
+#  Debajo esta el video de Fron este proyecto y el back esta en otro repositorio, ya que asi es una manera para consumir la api
+![image](https://github.com/user-attachments/assets/87b0daa6-ebe2-40d1-8d34-4edaa9e83360)
 
 
 # Getting Started with Create React App
@@ -21,6 +22,10 @@ Recepción de notificaciones en tiempo real sobre el estado de las citas.
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
+
+
+https://github.com/user-attachments/assets/8854eb4d-5aac-4686-8037-5689026304d5
+
 
 In the project directory, you can run:
 
